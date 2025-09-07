@@ -14,7 +14,10 @@ public class TestContext {
 
     public TestContext() {
         // Configurables vía -DBASE_URL, -Dheadless, -DslowMo
-        String url = System.getProperty("BASE_URL", "https://www.saucedemo.com/");
+        String url = System.getProperty("BASE_URL");
+        if(url == null || url.isBlank() || url.isEmpty()){
+            url="https://www.saucedemo.com/";
+        }
         // normaliza para que siempre termine en '/'
         this.baseUrl = url.endsWith("/") ? url : url + "/";
         this.headless = Boolean.parseBoolean(System.getProperty("headless", "true"));
