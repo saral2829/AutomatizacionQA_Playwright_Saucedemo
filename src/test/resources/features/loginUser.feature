@@ -1,4 +1,5 @@
 @login
+@screenshot
 Feature: Login en Sauce Demo
 
   Background:

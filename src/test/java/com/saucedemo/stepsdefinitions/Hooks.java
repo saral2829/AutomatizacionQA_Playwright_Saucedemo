@@ -4,6 +4,10 @@ import com.microsoft.playwright.Page;
 import com.saucedemo.core.TestContext;
 import io.cucumber.java.*;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 public class Hooks {
 
     private final TestContext tc;
@@ -35,5 +39,27 @@ public class Hooks {
     @After(order = 100) // último: cerrar todo
     public void closeAll() {
         tc.close();
+    }
+    @AfterStep("@screenshot")
+    public void attachScreenshotAfterStep(Scenario scenario) {
+        attachScreenshot(scenario, "after-step");
+    }
+
+    private void attachScreenshot(Scenario scenario, String label) {
+        Page page = (tc != null) ? tc.page : null;
+        if (page == null) return;
+
+        try {
+
+            String safe = scenario.getName().replaceAll("\\W+", "_");
+            Path out = Paths.get("target", "screenshots", safe + "_" + System.currentTimeMillis() + ".png");
+            Files.createDirectories(out.getParent());
+            page.screenshot(new Page.ScreenshotOptions().setPath(out).setFullPage(true));
+
+            byte[] bytes = Files.readAllBytes(out);
+            scenario.attach(bytes, "image/png", label + "_" + out.getFileName().toString());
+        } catch (Exception e) {
+            System.err.println("No se pudo adjuntar screenshot: " + e.getMessage());
+        }
     }
 }

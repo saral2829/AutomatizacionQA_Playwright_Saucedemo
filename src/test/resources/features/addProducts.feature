@@ -1,4 +1,5 @@
 @addProducts
+@screenshot
 Feature: El usuario puede agregar productos desde la pagina productos
 
   Scenario Outline: Agregar productos por nombre

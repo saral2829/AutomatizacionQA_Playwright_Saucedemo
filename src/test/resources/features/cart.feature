@@ -1,4 +1,5 @@
 @cart
+@screenshot
 Feature: Visualizar productos en el carrito de compras
 
   Scenario Outline: Ver productos agregados en el carrito

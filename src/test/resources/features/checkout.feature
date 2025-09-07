@@ -1,4 +1,5 @@
 @Checkout
+@screenshot
 Feature: Completar compra
 
   Background:
