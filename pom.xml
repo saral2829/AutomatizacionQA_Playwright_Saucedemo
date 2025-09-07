@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.saucedemo</groupId>
+    <artifactId>saucedemo-playwright-java</artifactId>
+    <version>1.0.0</version>
+    <name>SauceDemo Playwright + Cucumber (Java)</name>
+
+    <properties>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <!-- versions -->
+        <playwright.version>1.47.0</playwright.version>
+        <cucumber.version>7.15.0</cucumber.version>
+        <junit.platform.version>1.10.2</junit.platform.version>
+        <junit.jupiter.version>5.10.2</junit.jupiter.version>
+        <surefire.version>3.2.5</surefire.version>
+    </properties>
+
+    <dependencies>
+        <!-- Playwright -->
+        <dependency>
+            <groupId>com.microsoft.playwright</groupId>
+            <artifactId>playwright</artifactId>
+            <version>${playwright.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Cucumber + JUnit Platform -->
+        <dependency>
+            <groupId>io.cucumber</groupId>
+            <artifactId>cucumber-java</artifactId>
+            <version>${cucumber.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.cucumber</groupId>
+            <artifactId>cucumber-junit-platform-engine</artifactId>
+            <version>${cucumber.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- DI (para @Before/@After con inyección si lo usas) -->
+        <dependency>
+            <groupId>io.cucumber</groupId>
+            <artifactId>cucumber-picocontainer</artifactId>
+            <version>${cucumber.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- JUnit 5 (útil si usas Assertions, etc.) -->
+        <dependency>
+            <groupId>org.junit.platform</groupId>
+            <artifactId>junit-platform-suite</artifactId>
+            <version>${junit.platform.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>${junit.jupiter.version}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <!-- JUnit 5 runner + props para Cucumber y Playwright -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${surefire.version}</version>
+                <configuration>
+                    <!-- Cucumber lee estas system props -->
+                    <systemPropertyVariables>
+                        <!-- Reportes -->
+                        <cucumber.plugin>pretty, html:target/cucumber-report.html, json:target/cucumber.json</cucumber.plugin>
+                        <!-- Filtrado por tags desde CLI: -Dcucumber.filter.tags="@smoke" -->
+                        <!--suppress UnresolvedMavenProperty -->
+                        <cucumber.filter.tags>${cucumber.filter.tags}</cucumber.filter.tags>
+                        <!-- Modo headless por defecto (override con -Dheadless=false) -->
+                        <!--suppress UnresolvedMavenProperty -->
+                        <headless>${headless}</headless>
+                        <!-- Base URL para tus tests (override con -DBASE_URL=https://...) -->
+                        <!--suppress UnresolvedMavenProperty -->
+                        <BASE_URL>${BASE_URL}</BASE_URL>
+                        <!--suppress UnresolvedMavenProperty -->
+                        <channel>${channel}</channel>
+                    </systemPropertyVariables>
+
+                    <!-- Donde Cucumber buscará tu runner: RunnerTest.java -->
+                    <includes>
+                        <include>**/RunnerTest.java</include>
+                    </includes>
+
+                    <!-- Para que Playwright guarde navegadores dentro del proyecto -->
+                    <environmentVariables>
+                        <PLAYWRIGHT_BROWSERS_PATH>0</PLAYWRIGHT_BROWSERS_PATH>
+                        <!-- MUY IMPORTANTE: NO descargar navegadores -->
+                        <PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD>1</PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD>
+                    </environmentVariables>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
