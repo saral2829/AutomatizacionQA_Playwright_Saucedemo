@@ -42,7 +42,6 @@ public class CartSteps {
         for (String name : csv.split("\\s*;\\s*")) {
             Locator item = tc.page.locator(".inventory_item").filter(new Locator.FilterOptions().setHasText(name));
             assertTrue(item.isVisible(), "Producto no visible: " + name);
-            // Si ya dice Remove, no agregar de nuevo
             Locator btn = item.locator("button");
             if (btn.innerText().toLowerCase().contains("add")) btn.click();
         }
@@ -62,7 +61,6 @@ public class CartSteps {
     }
 
     public void addNDefaultProducts(int n) {
-        // Productos por defecto (suficiente para tus pruebas)
         String[] defaults = new String[]{
                 "Sauce Labs Backpack",
                 "Sauce Labs Bike Light",

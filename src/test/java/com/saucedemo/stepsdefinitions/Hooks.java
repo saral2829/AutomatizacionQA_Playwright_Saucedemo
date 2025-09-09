@@ -21,7 +21,7 @@ public class Hooks {
         // Arranca Playwright (crea playwright, browser, context, page)
         tc.start();
 
-        // Si quieres empezar siempre en login, descomenta:
+        // Si quieres empezar siempre en login
         // String base = System.getProperty("BASE_URL", "https://www.saucedemo.com/");
         // tc.page.navigate(base);
     }
